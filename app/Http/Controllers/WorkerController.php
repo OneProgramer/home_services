@@ -12,7 +12,7 @@ class WorkerController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:worker', ['except' => ['login','code']]);
+        // $this->middleware('auth:worker', ['except' => ['login','code']]);
     }
     /**
      * Display a listing of the resource.
@@ -67,7 +67,7 @@ class WorkerController extends Controller
 
     public function login(){
         if(request('phone')){
-            $worker = Worker::where('phone',request('phone'))->first();
+            $worker = Worker::where('phone',request('phone'))->whereNotNull('phone_verify_at')->first();
             if (!$worker ) {
                 return response()->json(['msg' => 'Unauthorized'], 401);
             }
