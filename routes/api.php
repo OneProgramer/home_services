@@ -6,18 +6,20 @@ use App\Http\Controllers\WorkerController;
 use Illuminate\Support\Facades\Route;
 
 
+Route::get('/error',function(){
+    return response()->json(['msg'=>'unauthorized']);
+});
+
+Route::post('/user', [UserController::class,'store']);
+Route::post('/user/verify', [UserController::class,'verify']);
+Route::post('/user/update', [UserController::class,'update']);
+Route::get('/user/code/{phone}', [UserController::class,'code']);
 
 
 
-// Route::post('logout', [AuthController::class,'logout']);
-// Route::post('refresh', [AuthController::class,'refresh']);
-// Route::post('me', [AuthController::class,'me']);
+Route::post('/worker', [WorkerController::class,'store']);
+Route::post('/worker/verify', [WorkerController::class,'verify']);
+Route::post('/worker/update', [WorkerController::class,'update']);
+Route::get('/worker/code/{phone}', [WorkerController::class,'code']);
 
-Route::get('/code/{phone}', [WorkerController::class,'code']);
 
-
-Route::post('/user_login', [AuthController::class,'login']);
-Route::post('/user_register', [UserController::class,'store']);
-Route::post('/worker_register', [WorkerController::class,'store']);
-Route::post('/worker_verify', [WorkerController::class,'verify']);
-Route::post('/worker_login', [WorkerController::class,'login']);

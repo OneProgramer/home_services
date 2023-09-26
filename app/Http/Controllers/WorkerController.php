@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\WorkerRequest;
+use App\Models\User;
 use App\Models\Worker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator ;
@@ -12,7 +13,7 @@ class WorkerController extends Controller
 {
     public function __construct()
     {
-        // $this->middleware('auth:worker', ['except' => ['login','code']]);
+        $this->middleware('auth:worker', ['except' => ['store','code','verify']]);
     }
     /**
      * Display a listing of the resource.
@@ -36,12 +37,20 @@ class WorkerController extends Controller
     public function store(WorkerRequest $request)
     {
         $code = rand(1111,9999);
-        Worker::create([
-            'phone'=>$request->phone,
-            'phone_verify_code'=>$code,
-        ]);
+        $phone = $request->phone;
+        $worker = Worker::where('phone',$phone)->first();
 
-        return response()->json(['msg'=>true]);
+        if($worker){
+            $worker->update(['phone_verify_code'=>$code]);
+            return response()->json(['msg'=>true]);
+        }else{
+            Worker::create([
+                'phone'=>$phone,
+                'phone_verify_code'=>$code
+            ]);
+            return response()->json(['msg'=>true]);
+        }
+
     }
 
     public function verify(Request $request)
@@ -51,33 +60,35 @@ class WorkerController extends Controller
             'phone'=>'required|max:20'
         ]);
 
+
         if($validator->fails()){
             return response()->json(['msg'=>false,'data'=>$validator->errors()]);
         }
-
-        $worker = Worker::where(['phone'=>$request->phone,'phone_verify_code'=>$request->code])->first();
-
-        if($worker){
-            $worker::where(['phone'=>$request->phone,'phone_verify_code'=>$request->code])->update(['phone_verify_at'=>now()]);
-            return response()->json(['msg'=>true]);
-        }
-
-        return response()->json(['msg'=>false]);
-    }
-
-    public function login(){
-        if(request('phone')){
-            $worker = Worker::where('phone',request('phone'))->whereNotNull('phone_verify_at')->first();
-            if (!$worker ) {
-                return response()->json(['msg' => 'Unauthorized'], 401);
-            }
-    
-            return $this->respondWithToken(JWTAuth::fromUser($worker));
-        }else{
-            return response()->json(['msg' => 'Unauthorized'], 401);
-        }
         
+
+        $worker = Worker::where('phone',$request->phone)->whereNotNull('phone_verify_at')->first();
+        
+        if($worker){
+            if(Worker::where('phone_verify_code',$request->code)->where('phone',$request->phone)->first())
+            {
+                $worker->update(['phone_verify_at'=>now()]);
+                return response()->json(['msg'=>'old user','token'=>JWTAuth::fromUser($worker)]);
+            }else{
+                return response()->json(['msg'=>false]);
+            };
+        }else{
+            if($worker = Worker::where(['phone'=>$request->phone,'phone_verify_code'=>$request->code])->first())
+            {
+                $worker->update(['phone_verify_at'=>now()]);
+                return response()->json(['msg'=>'new user','token'=>JWTAuth::fromUser($worker)]);
+
+            }else{
+                return response()->json(['msg'=>false]);
+            };
+        }
     }
+
+
     /**
      * Display the specified resource.
      */
@@ -97,9 +108,31 @@ class WorkerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'token' => 'required',
+            'first_name'=>'required|max:255',
+            'last_name'=>'required|max:255',
+            'phone'=>'required|max:20'
+        ]);
+
+
+        if($validator->fails()){
+            return response()->json(['msg'=>false,'data'=>$validator->errors()]);
+        }
+        
+
+        $worker = Worker::where('phone',$request->phone);
+
+        if($worker->first()){
+            $worker->update([
+                'first_name'=>$request->first_name,
+                'last_name'=>$request->last_name,
+            ]);
+
+            return response()->json(['msg'=>true]);
+        }
     }
 
     /**
@@ -120,13 +153,5 @@ class WorkerController extends Controller
         }
     }
 
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            // 'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'msg'=>true
-        ]);
-    }
+
 }

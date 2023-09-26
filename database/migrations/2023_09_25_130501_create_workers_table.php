@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->string('phone');
+            $table->string('phone')->unique();
             $table->integer('phone_verify_code')->nullable();
             $table->timestamp('phone_verify_at')->nullable();
             $table->timestamps();
