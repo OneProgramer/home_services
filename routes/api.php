@@ -14,6 +14,8 @@ Route::post('/user', [UserController::class,'store']);
 Route::post('/user/verify', [UserController::class,'verify']);
 Route::post('/user/update', [UserController::class,'update']);
 Route::get('/user/code/{phone}', [UserController::class,'code']);
+Route::post('/user/google/callback', [UserController::class,'google']);
+// Route::get('/user/facebook/callback', [UserController::class,'code']);
 
 
 

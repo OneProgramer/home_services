@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('last_name')->nullable();
             $table->integer('social_id')->nullable();
             $table->string('social_type')->nullable();
-            $table->string('phone')->unique();
+            $table->string('phone')->nullable()->unique();
             $table->timestamp('phone_verify_at')->nullable();
             $table->integer('phone_verify_code')->nullable();
             $table->rememberToken();

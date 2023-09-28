@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['store','verify','code']]);
+        $this->middleware('auth:api', ['except' => ['store','verify','code','google']]);
     }
     /**
      * Display a listing of the resource.
@@ -90,6 +90,31 @@ class UserController extends Controller
 
     }
 
+    public function google(Request $request){
+        $validator = Validator::make($request->all(),[
+            'user_id'=>'required|max:255',
+            'user_name'=>'required|max:255'
+        ]);
+
+        if($validator->fails()){
+            return response()->json(['msg'=>false,'data'=>$validator->errors()]);
+        }
+
+        $user = User::where('social_id',$request->user_id)->first();
+
+        if($user){
+            return response()->json(['msg'=>'login','token'=>JWTAuth::fromUser($user)]);
+        }else{
+            User::create([
+                'first_name'=>$request->user_name,
+                'social_id'=>$request->user_id,
+                'social_type'=>'google'
+            ]);
+            
+            return response()->json(['msg'=>'created']);
+        }
+
+    }
 
     public function code(string $phone)
     {
