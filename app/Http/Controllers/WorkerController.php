@@ -153,5 +153,30 @@ class WorkerController extends Controller
         }
     }
 
+    public function data(Request $request){
+      
+        $validator = Validator::make($request->all(),[
+            'ssd'=>'required|max:20|min:10',
+            'job'=>'required|max:255|min:2',
+            'img_name' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+            'id'=>'required|max:10'
+        ]);
+
+        if($validator->fails()){
+            return response()->json(['msg'=>false,'data'=>$validator->errors()]);
+        }
+
+        $imageName = time().'.'.$request->img_name->extension();
+        if($worker = Worker::where('id',$request->id)->first())
+        {
+            $worker->update(['ssd'=>$request->ssd,'job'=>$request->job,'img_name'=>$imageName]);
+            $request->img_name->move(public_path('worker'), $imageName);
+            return response()->json(['msg'=>true]);
+        }
+        return response()->json(['msg'=>false,'data'=>'worker_id is incorrect']);
+
+    }
+
+ 
 
 }

@@ -70,11 +70,17 @@ class UserController extends Controller
         $user = User::where('phone',$request->phone)->whereNotNull('phone_verify_at')->first();
         
         if($user){
-            if(User::where('phone_verify_code',$request->code)->where('phone',$request->phone)->first())
+            if(User::where('phone_verify_code',$request->code)->where('phone',$request->phone)->first() and 
+                $user->first_name != null)
             {
                 $user->update(['phone_verify_at'=>now()]);
                 return response()->json(['msg'=>'old user','token'=>JWTAuth::fromUser($user)]);
-            }else{
+            }else if(User::where('phone_verify_code',$request->code)->where('phone',$request->phone)->first() and 
+            $user->first_name == null ){
+                $user->update(['phone_verify_at'=>now()]);
+                return response()->json(['msg'=>'new user','token'=>JWTAuth::fromUser($user)]);
+            }
+            else{
                 return response()->json(['msg'=>false]);
             };
         }else{
@@ -169,6 +175,34 @@ class UserController extends Controller
 
             return response()->json(['msg'=>true]);
         }
+    }
+
+
+    public function data(Request $request){
+      
+        $validator = Validator::make($request->all(),[
+            'ssd'=>'required|max:20|min:10',
+            'img_name' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+            'id'=>'required|max:10',
+            'address1'=>'required|max:255',
+            'address2'=>'max:255',
+            'address3'=>'max:255',
+        ]);
+
+        if($validator->fails()){
+            return response()->json(['msg'=>false,'data'=>$validator->errors()]);
+        }
+
+        $imageName = time().'.'.$request->img_name->extension();
+        if($user = User::where('id',$request->id)->first())
+        {
+            $user->update($request->except('img_name'));
+            $user->update(['img_name'=>$imageName]);
+            $request->img_name->move(public_path('user'), $imageName);
+            return response()->json(['msg'=>true]);
+        }
+        return response()->json(['msg'=>false,'data'=>'user_id is incorrect']);
+
     }
 
     /**
