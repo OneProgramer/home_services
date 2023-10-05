@@ -170,7 +170,7 @@ class WorkerController extends Controller
         if($worker = Worker::where('id',$request->id)->first())
         {
             $worker->update(['ssd'=>$request->ssd,'job'=>$request->job,'img_name'=>$imageName]);
-            $request->img_name->move(public_path('worker'), $imageName);
+            // $request->img_name->move(public_path('worker'), $imageName);
             return response()->json(['msg'=>true]);
         }
         return response()->json(['msg'=>false,'data'=>'worker_id is incorrect']);

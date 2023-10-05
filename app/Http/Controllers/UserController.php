@@ -198,7 +198,7 @@ class UserController extends Controller
         {
             $user->update($request->except('img_name'));
             $user->update(['img_name'=>$imageName]);
-            $request->img_name->move(public_path('user'), $imageName);
+            // $request->img_name->move(public_path('user'), $imageName);
             return response()->json(['msg'=>true]);
         }
         return response()->json(['msg'=>false,'data'=>'user_id is incorrect']);
