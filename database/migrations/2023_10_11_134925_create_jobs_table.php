@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('img')->nullable();
             $table->text('description');
             $table->string('title');
-            $table->integer('price');
-            $table->integer('days');
-            $table->string('address');
+            $table->string('length');
+            $table->string('width');
+            $table->string('zone');
             $table->string('stage')->default('1');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

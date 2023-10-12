@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('ssd')->nullable()->unique();
             $table->string('img_name')->nullable();
-            $table->string('job')->nullable();
+            $table->string('profession')->nullable();
             $table->integer('phone_verify_code')->nullable();
             $table->timestamp('phone_verify_at')->nullable();
             $table->timestamps();

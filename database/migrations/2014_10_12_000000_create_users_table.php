@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('ssd')->nullable();
-            $table->string('address1')->nullable();
-            $table->string('address2')->nullable();
-            $table->string('address3')->nullable();
+            $table->string('zone')->nullable();
+            $table->string('length')->nullable();
+            $table->string('width')->nullable();
             $table->string('img_name')->nullable();
             $table->string('social_id')->nullable();
             $table->string('social_type')->nullable();

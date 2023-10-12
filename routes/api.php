@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkerController;
@@ -28,8 +29,10 @@ Route::get('/worker/code/{phone}', [WorkerController::class,'code']);
 Route::post('/worker/data/add', [WorkerController::class,'data']);
 
 //jobController
+Route::post('/jobs', [JobController::class,'index']);
 Route::post('/job/add', [JobController::class,'add']);
 Route::post('/job/select', [JobController::class,'select']);
+Route::post('/jobs/some', [JobController::class,'get_jobs']);
 
 //commentController
 Route::post('/comment/add', [CommentController::class,'add']);
@@ -42,4 +45,6 @@ Route::post('/comment/add', [CommentController::class,'add']);
 
 
 //evaluationController
-
+Route::post('/assess',[EvaluationController::class,'index']);
+Route::post('/assess/add',[EvaluationController::class,'assess']);
+Route::post('/assess/some',[EvaluationController::class,'get_evaluations']);

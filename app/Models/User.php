@@ -28,9 +28,9 @@ class User extends Authenticatable  implements JWTSubject
         'social_type',
         'ssd',
         'img_name',
-        'address1',
-        'address2',
-        'address3',
+        'zone',
+        'length',
+        'width',
     ];
 
     /**

@@ -12,18 +12,57 @@ class JobController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api');
+            $this->middleware('auth:worker,api');
+        
     }
+
+
+    public function index(){
+        return Job::all();
+    }
+
+    
+    public function get_jobs(Request $request){
+        $validator = Validator::make($request->all(),[
+            'profession'=>'required|array'
+        ]);
+
+        if($validator->fails()){
+            return response()->json(['msg'=>false,'data'=>$validator->errors()]);
+        }
+        
+        return Job::all()->whereIn('profession',$request->profession);
+    }
+
+    
     public function add(Request $request){
+
+        $profession = [
+            'fan',
+            'screen',
+            'conditioning',
+            'gasStove',
+            'washingMachine',
+            'refrigerator',
+            'carCleaning',
+            'houseCleaning',
+            'electricity',
+            'plumbing',
+            'carpentry',
+            'tileInstallation',
+            'engraver'
+        ];
+
+
         $validator = Validator::make($request->all(),[
             'description'=>'required',
             'title'=>'required',
-            'price'=>'required',
             'img' => 'required|image|mimes:png,jpg,jpeg|max:2048',
-            'days'=>'required',
-            'address'=>'required',
             'user_id'=>'required',
-            'profession'=>'required',
+            'zone'=>'required',
+            'length'=>'required',
+            'width'=>'required',
+            'profession'=>'required|in:'.implode(',',$profession)
         ]);
 
         if($validator->fails()){
@@ -38,9 +77,9 @@ class JobController extends Controller
             Job::create([
                'description'=>$request->description,
                'title'=>$request->title,
-               'price'=>$request->price,
-               'days'=>$request->days,
-               'address'=>$request->address,
+               'zone'=>$request->zone,
+               'length'=>$request->length,
+               'width'=>$request->width,
                'user_id'=>$request->user_id,
                'profession'=>$request->profession,
                'img'=>$imageName
@@ -82,6 +121,8 @@ class JobController extends Controller
         }
 
     }
+
+   
 
     
 

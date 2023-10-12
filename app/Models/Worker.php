@@ -12,7 +12,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class Worker extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
-    protected $fillable = ['first_name','last_name','phone','phone_verify_code','phone_verify_at','ssd','img_name','job']; 
+    protected $fillable = ['first_name','last_name','phone','phone_verify_code','phone_verify_at','ssd','img_name','profession']; 
 
      // Rest omitted for brevity
 

@@ -163,11 +163,27 @@ class WorkerController extends Controller
 
     public function data(Request $request){
       
+        $profession = [
+        'fan',
+        'screen',
+        'conditioning',
+        'gasStove',
+        'washingMachine',
+        'refrigerator',
+        'carCleaning',
+        'houseCleaning',
+        'electricity',
+        'plumbing',
+        'carpentry',
+        'tileInstallation',
+        'engraver'
+    ];
+    
         $validator = Validator::make($request->all(),[
             'ssd'=>'required|max:20|min:10',
-            'job'=>'required|max:255|min:2',
+            'profession'=>'required|max:255|min:2|in:'.implode(',',$profession),
             'img_name' => 'required|image|mimes:png,jpg,jpeg|max:2048',
-            'id'=>'required|max:10'
+            'id'=>'required'
         ]);
 
         if($validator->fails()){
@@ -177,14 +193,11 @@ class WorkerController extends Controller
         $imageName = time().'.'.$request->img_name->extension();
         if($worker = Worker::where('id',$request->id)->first())
         {
-            $worker->update(['ssd'=>$request->ssd,'job'=>$request->job,'img_name'=>$imageName]);
+            $worker->update(['ssd'=>$request->ssd,'profession'=>$request->profession,'img_name'=>$imageName]);
             // $request->img_name->move(public_path('worker'), $imageName);
             return response()->json(['msg'=>true]);
         }
         return response()->json(['msg'=>false,'data'=>'worker_id is incorrect']);
 
     }
-
- 
-
 }

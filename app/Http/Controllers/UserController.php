@@ -184,9 +184,9 @@ class UserController extends Controller
             'ssd'=>'required|max:20|min:10',
             'img_name' => 'required|image|mimes:png,jpg,jpeg|max:2048',
             'id'=>'required',
-            'address1'=>'required|max:255',
-            'address2'=>'max:255',
-            'address3'=>'max:255',
+            'zone'=>'required|max:255',
+            'length'=>'max:255',
+            'width'=>'max:255',
         ]);
 
         if($validator->fails()){
