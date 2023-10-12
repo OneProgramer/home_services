@@ -23,7 +23,7 @@ class WorkerRequest extends FormRequest
     public function rules(): array
     {
            return [
-            'phone' => 'required|unique:workers|max:20',
+            'phone' => 'required|max:20',
         ];
     }
     public function failedValidation(ValidationValidator $validator)

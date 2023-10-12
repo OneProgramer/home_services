@@ -69,23 +69,31 @@ class WorkerController extends Controller
         $worker = Worker::where('phone',$request->phone)->whereNotNull('phone_verify_at')->first();
         
         if($worker){
-            if(Worker::where('phone_verify_code',$request->code)->where('phone',$request->phone)->first())
+            if(Worker::where('phone_verify_code',$request->code)->where('phone',$request->phone)->first() and 
+                $worker->first_name != null)
             {
                 $worker->update(['phone_verify_at'=>now()]);
-                return response()->json(['msg'=>'old user','token'=>JWTAuth::fromUser($worker)]);
-            }else{
+                return response()->json(['msg'=>'old worker','token'=>JWTAuth::fromUser($worker)]);
+            }else if(Worker::where('phone_verify_code',$request->code)->where('phone',$request->phone)->first() and 
+            $worker->first_name == null ){
+                $worker->update(['phone_verify_at'=>now()]);
+                return response()->json(['msg'=>'new worker','token'=>JWTAuth::fromUser($worker)]);
+            }
+            else{
                 return response()->json(['msg'=>false]);
             };
         }else{
             if($worker = Worker::where(['phone'=>$request->phone,'phone_verify_code'=>$request->code])->first())
             {
                 $worker->update(['phone_verify_at'=>now()]);
-                return response()->json(['msg'=>'new user','token'=>JWTAuth::fromUser($worker)]);
+                return response()->json(['msg'=>'new worker','token'=>JWTAuth::fromUser($worker)]);
 
             }else{
                 return response()->json(['msg'=>false]);
             };
         }
+
+   
     }
 
 

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('address2')->nullable();
             $table->string('address3')->nullable();
             $table->string('img_name')->nullable();
-            $table->integer('social_id')->nullable();
+            $table->string('social_id')->nullable();
             $table->string('social_type')->nullable();
             $table->string('phone')->nullable()->unique();
             $table->timestamp('phone_verify_at')->nullable();

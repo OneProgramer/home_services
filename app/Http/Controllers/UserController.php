@@ -98,7 +98,7 @@ class UserController extends Controller
 
     public function google(Request $request){
         $validator = Validator::make($request->all(),[
-            'user_id'=>'required|max:255',
+            'user_id'=>'required|string|max:255',
             'user_name'=>'required|max:255'
         ]);
 
@@ -183,7 +183,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(),[
             'ssd'=>'required|max:20|min:10',
             'img_name' => 'required|image|mimes:png,jpg,jpeg|max:2048',
-            'id'=>'required|max:10',
+            'id'=>'required',
             'address1'=>'required|max:255',
             'address2'=>'max:255',
             'address3'=>'max:255',
@@ -212,4 +212,6 @@ class UserController extends Controller
     {
         //
     }
+
+
 }
