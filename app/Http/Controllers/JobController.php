@@ -31,7 +31,7 @@ class JobController extends Controller
         }
 
         $imageName = time().'.'.$request->img->extension();
-        $request->img->move(public_path('job'), $imageName);
+        // $request->img->move(public_path('job'), $imageName);
 
 
         try{
