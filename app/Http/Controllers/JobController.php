@@ -34,6 +34,29 @@ class JobController extends Controller
         return Job::all()->whereIn('profession',$request->profession);
     }
 
+    public function get_job_comments(Request $request){
+        $validator = Validator::make($request->all(),[
+            'job_id'=>'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json(['msg'=>false,'data'=>$validator->errors()]);
+        }
+        
+        return Comment::all()->whereIn('job_id',$request->job_id);
+    }
+
+    public function get_user_jobs(Request $request){
+        $validator = Validator::make($request->all(),[
+            'id'=>'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json(['msg'=>false,'data'=>$validator->errors()]);
+        }
+        
+        return Job::all()->whereIn('user_id',$request->id);
+    }
     
     public function add(Request $request){
 

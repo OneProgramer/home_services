@@ -74,11 +74,11 @@ class UserController extends Controller
                 $user->first_name != null)
             {
                 $user->update(['phone_verify_at'=>now()]);
-                return response()->json(['msg'=>'old user','token'=>JWTAuth::fromUser($user)]);
+                return response()->json(['msg'=>'old user','token'=>JWTAuth::fromUser($user),"id"=>$user->id]);
             }else if(User::where('phone_verify_code',$request->code)->where('phone',$request->phone)->first() and 
             $user->first_name == null ){
                 $user->update(['phone_verify_at'=>now()]);
-                return response()->json(['msg'=>'new user','token'=>JWTAuth::fromUser($user)]);
+                return response()->json(['msg'=>'new user','token'=>JWTAuth::fromUser($user),"id"=>$user->id]);
             }
             else{
                 return response()->json(['msg'=>false]);
@@ -87,7 +87,7 @@ class UserController extends Controller
             if($user = User::where(['phone'=>$request->phone,'phone_verify_code'=>$request->code])->first())
             {
                 $user->update(['phone_verify_at'=>now()]);
-                return response()->json(['msg'=>'new user','token'=>JWTAuth::fromUser($user)]);
+                return response()->json(['msg'=>'new user','token'=>JWTAuth::fromUser($user),"id"=>$user->id]);
 
             }else{
                 return response()->json(['msg'=>false]);
@@ -109,15 +109,15 @@ class UserController extends Controller
         $user = User::where('social_id',$request->user_id)->first();
 
         if($user){
-            return response()->json(['msg'=>'login','token'=>JWTAuth::fromUser($user)]);
+            return response()->json(['msg'=>'login','token'=>JWTAuth::fromUser($user),"id"=>$user->id]);
         }else{
-            User::create([
+            $user = User::create([
                 'first_name'=>$request->user_name,
                 'social_id'=>$request->user_id,
                 'social_type'=>'google'
             ]);
             
-            return response()->json(['msg'=>'created']);
+            return response()->json(['msg'=>'created',"id"=>$user->id,'token'=>JWTAuth::fromUser($user)]);
         }
 
     }

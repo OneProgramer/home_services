@@ -33,6 +33,8 @@ Route::post('/jobs', [JobController::class,'index']);
 Route::post('/job/add', [JobController::class,'add']);
 Route::post('/job/select', [JobController::class,'select']);
 Route::post('/jobs/some', [JobController::class,'get_jobs']);
+Route::post('/job/comments', [JobController::class,'get_job_comments']);
+Route::post('/user/jobs', [JobController::class,'get_user_jobs']);
 
 //commentController
 Route::post('/comment/add', [CommentController::class,'add']);
