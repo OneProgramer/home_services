@@ -13,11 +13,62 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['store','verify','code','google']]);
+        $this->middleware('auth:api', ['except' => ['store','verify','code','google','sign','login']]);
     }
     /**
      * Display a listing of the resource.
      */
+
+     public function sign(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'name'=>'required|min:2|max:50',
+            'email'=>'required|email|max:50',
+            'password'=>'required|max:30'
+        ]);
+
+
+        if($validator->fails()){
+            return response()->json(['msg'=>true,'data'=>$validator->errors()]);
+        }
+
+        $user = User::where('email',$request->email)->first();
+        if($user){
+            return response()->json(['msg'=>false,'data'=>'user is already exist!']);
+        }else{
+            User::create([
+                'name'=>$request->name,
+                'email'=>$request->email,
+                'password'=>Hash::make($request->password)
+            ]);
+            return response()->json(['msg'=>true]);
+        }
+    }
+
+
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'email'=>'required|email|max:50',
+            'password'=>'required|max:30'
+        ]);
+
+
+        if($validator->fails()){
+            return response()->json(['msg'=>false,'data'=>$validator->errors()]);
+        }
+
+        $user = User::where('email',$request->email)->first();
+        if(!$user){
+            return response()->json(['msg'=>false,'data'=>'email or password is wrong!']);
+        }else{
+            if(Hash::check($request->password,$user->password)){
+                return response()->json(['msg'=>true,'token'=>JWTAuth::fromUser($user)]);
+            }else{
+                return response()->json(['msg'=>false,'data'=>'email or password is wrong!']);
+            }
+        }
+    }
     public function index()
     {
         //
